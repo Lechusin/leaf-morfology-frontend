@@ -1,0 +1,14 @@
+/* App.css */
+
+/* Estilos para la sección intermedia */
+.main-content {
+  background-color: #f0f0f0; /* Cambia el color de fondo según tus preferencias */
+  min-height: 400px; /* Establece la altura mínima según tus preferencias */
+  padding: 20px; /* Añade espacio de relleno para separar el contenido del borde */
+}
+
+/* Agrega un sombreado al contenedor principal */
+.container {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 50px;
+}
