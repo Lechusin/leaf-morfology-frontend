@@ -7,7 +7,11 @@ function Result({ imageData, callBackend }) {
   const handleCallBackend = async () => {
     // Simulación de la llamada al backend (deberías realizar la llamada real)
     // Aquí, setBackendImage con la imagen recibida del backend
-    const backendImageData = await callBackend(imageData);
+    // const backendImageData = await callBackend(imageData);
+    const backendImageData = {
+      "backendImage": "Acorazonada",
+      "mensaje": "Procesamiento exitoso",
+    };
     setBackendImage(backendImageData);
 
     // Mostrar el modal después de llamar al backend
@@ -15,19 +19,20 @@ function Result({ imageData, callBackend }) {
   };
 
   const closeModal = () => {
-    // Cerrar el modal y limpiar la imagen del backend
+    // Cerrar el modal
     setModalVisible(false);
-    setBackendImage(null);
   };
 
   return (
     <div className="text-center">
       <h3>Imagen a Procesar</h3>
-      {imageData && <img src={imageData} alt="Resultado" className="img-fluid" />}
       {imageData && (
-        <button className="btn btn-primary mt-3" onClick={handleCallBackend}>
-          Procesar
-        </button>
+        <div className="d-flex flex-column align-items-center">
+          <img src={imageData} alt="Resultado" className="img-fluid mb-3" style={{ maxHeight: '400px' }} />
+          <button className="btn btn-primary" onClick={handleCallBackend}>
+            Procesar
+          </button>
+        </div>
       )}
       {!imageData && (
         <div className="alert alert-warning mt-3" role="alert">
@@ -46,20 +51,24 @@ function Result({ imageData, callBackend }) {
               </button>
             </div>
             <div className="modal-body">
-              <div className="d-flex justify-content-around">
-                {/* Imagen original */}
-                <div>
-                  <h5>Imagen Original</h5>
-                  <img src={imageData} alt="Imagen Original" className="img-fluid" />
-                </div>
-                {/* Imagen del backend */}
-                {backendImage && (
+              {/* Mostrar la imagen original y la imagen del backend */}
+              {backendImage && (
+                <div className="d-flex justify-content-between">
                   <div>
-                    <h5>Imagen del Backend</h5>
-                    <img src={backendImage} alt="Imagen del Backend" className="img-fluid" />
+                    <h5>Tu Imagen</h5>
+                    <img src={imageData} alt="Original" className="img-fluid" style={{ maxHeight: '180px' }} />
                   </div>
-                )}
-              </div>
+                  <div>
+                    <h5>Imagen Parecida</h5>
+                    <img src={process.env.PUBLIC_URL + '/Hojas/' + backendImage.backendImage + '.png'} alt="Backend" className="img-fluid" style={{ maxHeight: '180px' }} />
+                  </div>
+                </div>
+              )}
+              {backendImage && (
+                <div>
+                  <p>{backendImage.mensaje}</p>
+                </div>
+              )}
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" onClick={closeModal}>
@@ -69,6 +78,8 @@ function Result({ imageData, callBackend }) {
           </div>
         </div>
       </div>
+      {/* Fondo Borroso */}
+      {modalVisible && <div className="modal-backdrop fade show"></div>}
       {/* Fin del Modal */}
     </div>
   );
