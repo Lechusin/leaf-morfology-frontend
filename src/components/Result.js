@@ -3,25 +3,43 @@ import React, { useState } from 'react';
 function Result({ imageData, callBackend }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [backendImage, setBackendImage] = useState(null);
-
+  const [loading, setLoading] = useState(false);
   const handleCallBackend = async () => {
-    // Simulación de la llamada al backend (deberías realizar la llamada real)
-    // Aquí, setBackendImage con la imagen recibida del backend
-    // const backendImageData = await callBackend(imageData);
-    const backendImageData = {
-      "backendImage": "Acorazonada",
-      "mensaje": "Procesamiento exitoso",
-    };
-    setBackendImage(backendImageData);
+    setLoading(true);
+    // Llamada al backend
+    if (imageData) {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/procesar-imagen', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          mode: 'cors', // Asegura que la solicitud es de tipo CORS
+          body: JSON.stringify({ imageData }),
+        });
 
-    // Mostrar el modal después de llamar al backend
-    setModalVisible(true);
+        if (response.ok) {
+          const result = await response.json();
+          setBackendImage(result);
+          setModalVisible(true);
+        } else {
+          console.error('Error al llamar al backend');
+        }
+      } catch (error) {
+        console.error('Error de red:', error);
+      } finally {
+        setLoading(false);
+      }
+      
+    }
   };
+  
 
   const closeModal = () => {
-    // Cerrar el modal
     setModalVisible(false);
+    // Puedes agregar lógica para restablecer o limpiar el estado aquí si es necesario
   };
+
 
   return (
     <div className="text-center">
@@ -29,8 +47,8 @@ function Result({ imageData, callBackend }) {
       {imageData && (
         <div className="d-flex flex-column align-items-center">
           <img src={imageData} alt="Resultado" className="img-fluid mb-3" style={{ maxHeight: '400px' }} />
-          <button className="btn btn-primary" onClick={handleCallBackend}>
-            Procesar
+          <button className="btn btn-primary" onClick={handleCallBackend} disabled={loading}>
+            {loading ? 'Procesando...' : 'Procesar'}
           </button>
         </div>
       )}
@@ -77,7 +95,7 @@ function Result({ imageData, callBackend }) {
             </div>
           </div>
         </div>
-      </div>
+        </div>
       {/* Fondo Borroso */}
       {modalVisible && <div className="modal-backdrop fade show"></div>}
       {/* Fin del Modal */}
