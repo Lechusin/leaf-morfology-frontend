@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
-function Result({ imageData, callBackend }) {
+function Result({ imageData }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [backendImage, setBackendImage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -8,28 +9,22 @@ function Result({ imageData, callBackend }) {
     setLoading(true);
     // Llamada al backend
     if (imageData) {
-      try {
-        const response = await fetch('http://127.0.0.1:8000/procesar-imagen', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          mode: 'cors', // Asegura que la solicitud es de tipo CORS
-          body: JSON.stringify({ imageData }),
-        });
-
-        if (response.ok) {
-          const result = await response.json();
-          setBackendImage(result);
-          setModalVisible(true);
-        } else {
-          console.error('Error al llamar al backend');
-        }
-      } catch (error) {
-        console.error('Error de red:', error);
-      } finally {
-        setLoading(false);
-      }
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/procesar-imagen-url', {
+              url: 'https://cienciasnaturales.es/images/imagen%20pegada%20400x3006.jpg?crc=367723308',
+            });
+            console.log('Respuesta completa del backend:', response);
+            if (response.status === 200) {
+              setBackendImage(response.data);
+              setModalVisible(true);
+            } else {
+              console.error('Error al llamar al backend:', response.statusText);
+            }
+          } catch (error) {
+            console.error('Error de red:', error.message);
+          } finally {
+            setLoading(false);
+          }
       
     }
   };
