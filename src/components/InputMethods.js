@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import LocalImageUploader from './LocalImageUploader';
-import UrlImageUploader from './UrlImageUploader';
+// import UrlImageUploader from './UrlImageUploader';
 import CameraImageCapture from './CameraImageCapture';
 
 function InputMethods({ onImageChange }) {
@@ -19,11 +19,11 @@ function InputMethods({ onImageChange }) {
             Desde Equipo
           </button>
         </li>
-        <li className="nav-item">
+        {/* <li className="nav-item">
           <button className={`nav-link ${activeTab === 'url' ? 'active' : ''}`} onClick={() => switchTab('url')}>
             Desde URL
           </button>
-        </li>
+        </li> */}
         <li className="nav-item">
           <button className={`nav-link ${activeTab === 'camera' ? 'active' : ''}`} onClick={() => switchTab('camera')}>
             Desde Cámara
@@ -35,9 +35,9 @@ function InputMethods({ onImageChange }) {
         <div className={`tab-pane ${activeTab === 'local' ? 'active' : ''}`} id="local">
           <LocalImageUploader onImageChange={onImageChange} />
         </div>
-        <div className={`tab-pane ${activeTab === 'url' ? 'active' : ''}`} id="url">
+        {/* <div className={`tab-pane ${activeTab === 'url' ? 'active' : ''}`} id="url">
           <UrlImageUploader onImageChange={onImageChange} />
-        </div>
+        </div> */}
         <div className={`tab-pane ${activeTab === 'camera' ? 'active' : ''}`} id="camera">
           <CameraImageCapture onImageChange={onImageChange} />
         </div>

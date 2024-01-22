@@ -7,28 +7,39 @@ function Result({ imageData }) {
   const [loading, setLoading] = useState(false);
   const handleCallBackend = async () => {
     setLoading(true);
-    // Llamada al backend
-    if (imageData) {
-        try {
-            const response = await axios.post('http://127.0.0.1:8000/procesar-imagen-url', {
-              url: 'https://cienciasnaturales.es/images/imagen%20pegada%20400x3006.jpg?crc=367723308',
-            });
-            console.log('Respuesta completa del backend:', response);
-            if (response.status === 200) {
-              setBackendImage(response.data);
-              setModalVisible(true);
-            } else {
-              console.error('Error al llamar al backend:', response.statusText);
-            }
-          } catch (error) {
-            console.error('Error de red:', error.message);
-          } finally {
-            setLoading(false);
-          }
-      
+    console.log('Iniciando solicitud al backend...');
+    try {
+      const imageDataFile = dataURItoFile(imageData, 'image.jpg');
+
+      const formData = new FormData();
+      formData.append('file', imageDataFile);
+
+      const response = await axios.post('http://localhost:8000/procesar-imagen', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      // Aquí puedes manejar la respuesta del servidor
+      setBackendImage(response.data);
+      setModalVisible(true);
+    } catch (error) {
+      console.error('Error al cargar el archivo:', error.message);
+    } finally {
+      setLoading(false);
+      console.log('Finalizando solicitud al backend.');
     }
   };
   
+  function dataURItoFile(dataURI, fileName) {
+    const byteString = atob(dataURI.split(',')[1]);
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    return new File([ab], fileName, { type: 'image/jpeg' });
+  }
 
   const closeModal = () => {
     setModalVisible(false);
@@ -80,6 +91,7 @@ function Result({ imageData }) {
               {backendImage && (
                 <div>
                   <p>{backendImage.mensaje}</p>
+                  <p>Tu imagen es parecida a: {backendImage.backendImage}</p>
                 </div>
               )}
             </div>

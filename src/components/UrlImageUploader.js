@@ -24,6 +24,7 @@ function UrlImageUploader({ onImageChange }) {
       <button className="btn btn-primary mt-3" onClick={handleLoadImage}>
         Cargar Imagen
       </button>
+
     </div>
   );
 }
