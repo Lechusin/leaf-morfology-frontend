@@ -5,6 +5,7 @@ function Result({ imageData }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [backendImage, setBackendImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [invalidImageModalVisible, setInvalidImageModalVisible] = useState(false);
   const handleCallBackend = async () => {
     setLoading(true);
     console.log('Iniciando solicitud al backend...');
@@ -13,16 +14,24 @@ function Result({ imageData }) {
 
       const formData = new FormData();
       formData.append('file', imageDataFile);
+      const flag = {
+        "value": "1"
+      }
+      if (flag.value === "1") {
+        setInvalidImageModalVisible(true);
+      } else{
+        const response = await axios.post('http://localhost:8000/procesar-imagen', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
 
-      const response = await axios.post('http://localhost:8000/procesar-imagen', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+        // Aquí puedes manejar la respuesta del servidor
+        setBackendImage(response.data);
+        setModalVisible(true);
+      }
 
-      // Aquí puedes manejar la respuesta del servidor
-      setBackendImage(response.data);
-      setModalVisible(true);
+      
     } catch (error) {
       console.error('Error al cargar el archivo:', error.message);
     } finally {
@@ -63,7 +72,27 @@ function Result({ imageData }) {
           No hay imagen cargada.
         </div>
       )}
-
+      {/* Modal para imagen no válida */}
+    <div className={`modal ${invalidImageModalVisible ? 'show' : ''}`} tabIndex="-1" role="dialog" style={{ display: invalidImageModalVisible ? 'block' : 'none' }}>
+      <div className="modal-dialog" role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">Imagen no válida</h5>
+            <button type="button" className="close" onClick={() => setInvalidImageModalVisible(false)}>
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            <p>La imagen seleccionada no corresponde a una Hoja.</p>
+          </div>
+          <div className="modal-footer">
+            <button type="button" className="btn btn-secondary" onClick={() => setInvalidImageModalVisible(false)}>
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
       {/* Modal */}
       <div className={`modal ${modalVisible ? 'show' : ''}`} tabIndex="-1" role="dialog" style={{ display: modalVisible ? 'block' : 'none' }}>
         <div className="modal-dialog" role="document">
