@@ -14,10 +14,12 @@ function Result({ imageData }) {
 
       const formData = new FormData();
       formData.append('file', imageDataFile);
-      const flag = {
-        "value": "1"
-      }
-      if (flag.value === "1") {
+      const flag = await axios.post('http://localhost:8000/validar-imagen', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      if (flag.data.valor === "1") {
         setInvalidImageModalVisible(true);
       } else{
         const response = await axios.post('http://localhost:8000/procesar-imagen', formData, {
