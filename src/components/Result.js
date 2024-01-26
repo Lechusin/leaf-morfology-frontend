@@ -19,7 +19,7 @@ function Result({ imageData }) {
           'Content-Type': 'multipart/form-data',
         },
       });
-      if (flag.data.valor === "1") {
+      if (flag.data.valor === "0") {
         setInvalidImageModalVisible(true);
       } else{
         const response = await axios.post('http://localhost:8000/procesar-imagen', formData, {
